@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>富山県バスリアルタイムロケーション</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <!-- JQuery ---> 
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+    <!--leaf-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css">
+    <script async src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+
+    <!--my scripts-->
+    <!-- <script src="js/city_toyama.js"></script> -->
+   
+  </head>
+
+  <body class="vh-100">
+
+        <header class="container">
+            <h1 class="text-center">富山県のリアルタイムバスロケーション</h1>
+            <p class="text-center" id="target_name">富山地方鉄道</p>
+        </header>
+    
+        <main class="h-75">
+            <div class="container h-100">
+                <div class="row h-100">
+    
+                    <!--市とバスを選ばせる-->
+                    <div class="col-4 h-100 overflow-auto">
+                        <div class="accordion " id="accordionExample">
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">富山地方鉄道</button>
+                              </h2>
+                              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/chitetsu/VehiclePositions.pb">富山地鉄バス</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingOne">
+                                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">富山市</button>
+                              </h2>
+                              <!--classにshowをつけるとデフォルトで開く-->
+                              <div id="collapseOne" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                        <ul class="list-unstyled">
+                                            <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/toyama-city-maidohaya/VehiclePositions.pb">まいどはやバス</button></li>
+                                            <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/toyama-city-kureha/VehiclePositions.pb">呉羽いきいきバス</button></li>
+                                            <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/toyama-city-mizuhashi/VehiclePositions.pb">水橋ふれあいコミュニティバス</button></li>
+                                            <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/toyama-city-fuchu/VehiclePositions.pb">婦中コミュニティバス</button></li>
+                                            <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/toyama-city-yatsuo/VehiclePositions.pb">八尾コミュニティバス</button></li>
+                                            <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/toyama-city-oyama/VehiclePositions.pb">大山コミュニティバス</button></li>
+                                            <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/toyama-city-yamada/VehiclePositions.pb">山田コミュニティバス</button></li>
+                                            <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/toyama-city-horikawaminami/VehiclePositions.pb">堀川南地域コミュニティバス</button></li>
+                                        </ul>
+                                </div>
+                              </div>
+                            </div>
+    
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">高岡市</button>
+                              </h2>
+                              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/takaoka-city/VehiclePositions.pb">高岡市公営バス</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingUozu">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUozu" aria-expanded="false" aria-controls="collapseUozu">魚津市</button>
+                              </h2>
+                              <div id="collapseUozu" class="accordion-collapse collapse" aria-labelledby="headingUozu" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/uozu_omotenashi/VehiclePositions.pb">おもてなし魚津直行便</button></li>
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/uozu_shimin/VehiclePositions.pb">魚津市民バス </button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingNamerikawa">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNamerikawa" aria-expanded="false" aria-controls="collapseNamerikawa">滑川市</button>
+                              </h2>
+                              <div id="collapseNamerikawa" class="accordion-collapse collapse" aria-labelledby="headingNamerikawa" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/namerikawa-city/VehiclePositions.pb">のる my car</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingKurobe">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKurobe" aria-expanded="false" aria-controls="collapseKurobe">黒部市</button>
+                              </h2>
+                              <div id="collapseKurobe" class="accordion-collapse collapse" aria-labelledby="headingKurobe" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/kurobe_city_bus/VehiclePositions.pb">黒部市内路線バス（石田・愛本）</button></li>
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/kurobe_shinkansen/VehiclePositions.pb">黒部市内路線バス（新幹線生地）</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingTonami">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTonami" aria-expanded="false" aria-controls="collapseTonami">砺波市</button>
+                              </h2>
+                              <div id="collapseTonami" class="accordion-collapse collapse" aria-labelledby="headingTonami" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/tonami-city/VehiclePositions.pb">砺波市営バス</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingOyabe">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOyabe" aria-expanded="false" aria-controls="collapseOyabe">小矢部市</button>
+                              </h2>
+                              <div id="collapseOyabe" class="accordion-collapse collapse" aria-labelledby="headingOyabe" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/oyabe-city/VehiclePositions.pb">小矢部市営バス</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingNanto">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNanto" aria-expanded="false" aria-controls="collapseNanto">南砺市</button>
+                              </h2>
+                              <div id="collapseNanto" class="accordion-collapse collapse" aria-labelledby="headingNanto" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/nanto-city/VehiclePositions.pb">南砺市営バス（なんバス） </button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingKamiichi">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKamiichi" aria-expanded="false" aria-controls="collapseKamiichi">上市町</button>
+                              </h2>
+                              <div id="collapseKamiichi" class="accordion-collapse collapse" aria-labelledby="headingKamiichi" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/kamiichi-town/VehiclePositions.pb">上市町営バス</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingTateyama">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTateyama" aria-expanded="false" aria-controls="collapseTateyama">立山町</button>
+                              </h2>
+                              <div id="collapseTateyama" class="accordion-collapse collapse" aria-labelledby="headingTateyama" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/tateyama-town/VehiclePositions.pb">立山町営バス</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingNyuzen">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNyuzen" aria-expanded="false" aria-controls="collapseNyuzen">入善町</button>
+                              </h2>
+                              <div id="collapseNyuzen" class="accordion-collapse collapse" aria-labelledby="headingNyuzen" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="">のらんマイ･カー</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingAsahi">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAsahi" aria-expanded="false" aria-controls="collapseAsahi">朝日町</button>
+                              </h2>
+                              <div id="collapseAsahi" class="accordion-collapse collapse" aria-labelledby="headingAsahi" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/asahimachi/VehiclePositions.pb">あさひまちバス</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingKaetsuno">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKaetsuno" aria-expanded="false" aria-controls="collapseKaetsuno">加越能バス</button>
+                              </h2>
+                              <div id="collapseKaetsuno" class="accordion-collapse collapse" aria-labelledby="headingKaetsuno" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/kaetsuno/VehiclePositions.pb">加越能バス（一般路線）</button></li>
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/kaetsuno_sekaiisan/VehiclePositions.pb">加越能バス（世界遺産バス）</button></li>
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/kaetsuno_zuiryuji/VehiclePositions.pb">加越能バス（瑞龍寺線）</button></li>
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/kaetsuno_himi/VehiclePositions.pb">加越能バス（氷見市街地周遊バス）</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingWestJR">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWestJR" aria-expanded="false" aria-controls="collapseWestJR">西日本ジェイアールバス</button>
+                              </h2>
+                              <div id="collapseWestJR" class="accordion-collapse collapse" aria-labelledby="headingWestJR" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><button type="button" class="button btn btn-outline-secondary mt-2" value="https://gtfs-rt-files.buscatch.jp/toyama/nishinihon_jr/VehiclePositions.pb">	西日本ジェイアールバス（名金線）</button></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+      
+                        </div>
+                    </div>
+
+                    <!--マップ表示エリア-->
+                    <div class="col-8" id="map"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+          <p class="text-end m-1">Released under the <a href="https://opensource.org/licenses/mit-license.php">MIT license</a></p>
+        </footer>
+  </body>
+
+  <script>
+      let map ;
+      let train_icon;
+      let update_timer;
+
+      //読み込みが終了したらバスを表示、update_timerを作動
+      window.onload = function(){
+        train_icon = L.icon({
+            iconUrl: 'bus.png',
+            iconSize: [30, 30],
+            popupAnchor: [0, -11],
+        });
+        //初期位置:富大
+        map = L.map('map').setView([36.698,137.188], 15);
+        //OSMのデータ
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: "map data <a href='https://www.openstreetmap.org/copyright'>© OpenStreetMap contributors</a>"
+        }).addTo(map);
+
+        load_trains();
+        //30秒おきにアップデート
+        update_timer = setInterval(load_trains,30000);
+      };
+
+    //ボタンがクリックされたら、urlと表示する名前を変更、タイメーを一旦停止して、新しい電車をtimerにセット　デフォルトは富山地方鉄道
+    const trans_pb_url = "https://api.tera-chan.com/api/gtfs-rt_to_json/v1.php?source=";
+    let GTFS_URL = trans_pb_url+"https://gtfs-rt-files.buscatch.jp/toyama/chitetsu/VehiclePositions.pb";
+    $('.btn').click(function(){
+        $("#target_name").text($(this).text());
+        GTFS_URL = trans_pb_url + $(this).val();
+        clearInterval(update_timer);
+        load_trains();
+        update_timer = setInterval(load_trains,30000);
+    });
+
+
+    //ajaxGTFS=RTを取得、更新
+    var markers=[];
+    function load_trains(){
+        console.log("load GTFS-RT");
+        $.ajax({
+            url:GTFS_URL,
+            dataType:"json"
+        })
+        .done(function(data){
+            // alert(data+":"+JSON.stringify(data));
+
+            //表示されているマーカーの削除
+            markers.forEach(marker => {marker.remove();});
+            markers.length = 0;
+
+            if(data.length==0){
+                console.log("運行していません");
+                return;
+            }
+
+            //更新
+            data.forEach(element => {
+                // console.log(JSON.stringify(element))
+                var id = element["id"];
+                var lat = element["vehicle"]["position"]["latitude"];
+                var log = element["vehicle"]["position"]["longitude"];
+                var add_marker = L.marker([lat,log], {icon: train_icon}).bindPopup(id);
+                add_marker.addTo(map);
+                markers.push(add_marker);                   
+            });
+        })
+        .fail(function(){
+            alert("取得失敗 30秒後に再取得します");
+        });
+    }
+
+  </script>
+</html>
